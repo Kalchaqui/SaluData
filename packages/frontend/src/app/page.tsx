@@ -1,18 +1,19 @@
 'use client'
 
+import { useState } from 'react'
 import { useAccount } from 'wagmi'
 import { WalletConnect } from '@/components/wallet-connect'
-import { RegisterPublicKey } from '@/components/register-public-key'
-import { RegisterRecord } from '@/components/register-record'
-import { GrantConsent } from '@/components/grant-consent'
-import { AccessDetails } from '@/components/access-details'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Heart, Shield, FileText, Key, Eye } from 'lucide-react'
+import { ProfileSelector } from '@/components/profile-selector'
+import { PatientDashboard } from '@/components/patient-dashboard'
+import { DoctorDashboard } from '@/components/doctor-dashboard'
+import { Heart } from 'lucide-react'
 import { useIsMounted } from '@/lib/use-is-mounted'
+
+type Profile = 'patient' | 'doctor' | null
 
 export default function Home() {
   const { isConnected } = useAccount()
+  const [selectedProfile, setSelectedProfile] = useState<Profile>(null)
   const mounted = useIsMounted()
 
   if (!mounted) {
@@ -21,6 +22,14 @@ export default function Home() {
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     )
+  }
+
+  const handleProfileSelect = (profile: 'patient' | 'doctor') => {
+    setSelectedProfile(profile)
+  }
+
+  const handleBackToProfileSelection = () => {
+    setSelectedProfile(null)
   }
 
   return (
@@ -44,123 +53,86 @@ export default function Home() {
 
         {/* Main Content */}
         {isConnected ? (
-          <div className="max-w-6xl mx-auto">
-            <Tabs defaultValue="register" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="register" className="flex items-center gap-2">
-                  <Key className="h-4 w-4" />
-                  Clave Pública
-                </TabsTrigger>
-                <TabsTrigger value="record" className="flex items-center gap-2">
-                  <FileText className="h-4 w-4" />
-                  Registro Médico
-                </TabsTrigger>
-                <TabsTrigger value="consent" className="flex items-center gap-2">
-                  <Shield className="h-4 w-4" />
-                  Consentimiento
-                </TabsTrigger>
-                <TabsTrigger value="access" className="flex items-center gap-2">
-                  <Eye className="h-4 w-4" />
-                  Acceso
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="register" className="mt-6">
-                <div className="flex justify-center">
-                  <RegisterPublicKey />
-                </div>
-              </TabsContent>
-
-              <TabsContent value="record" className="mt-6">
-                <div className="flex justify-center">
-                  <RegisterRecord />
-                </div>
-              </TabsContent>
-
-              <TabsContent value="consent" className="mt-6">
-                <div className="flex justify-center">
-                  <GrantConsent />
-                </div>
-              </TabsContent>
-
-              <TabsContent value="access" className="mt-6">
-                <div className="flex justify-center">
-                  <AccessDetails />
-                </div>
-              </TabsContent>
-            </Tabs>
+          <div>
+            {!selectedProfile ? (
+              <ProfileSelector onProfileSelect={handleProfileSelect} />
+            ) : selectedProfile === 'patient' ? (
+              <PatientDashboard onBack={handleBackToProfileSelection} />
+            ) : (
+              <DoctorDashboard onBack={handleBackToProfileSelection} />
+            )}
           </div>
         ) : (
           <div className="max-w-2xl mx-auto">
-            <Card>
-              <CardHeader className="text-center">
-                <CardTitle className="flex items-center justify-center gap-2">
-                  <Shield className="h-6 w-6 text-blue-600" />
+            <div className="text-center py-12">
+              <div className="mb-6">
+                <Heart className="h-16 w-16 text-blue-600 mx-auto mb-4" />
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">
                   Conecta tu Wallet
-                </CardTitle>
-                <CardDescription>
-                  Para usar SaluData, necesitas conectar tu wallet primero
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="text-center">
+                </h2>
                 <p className="text-gray-600">
-                  SaluData utiliza tecnología blockchain para garantizar la privacidad y seguridad 
-                  de tus datos médicos. Conecta tu wallet para comenzar.
+                  Para usar SaluData, necesitas conectar tu wallet primero
                 </p>
-              </CardContent>
-            </Card>
+              </div>
+              <p className="text-gray-600 mb-8">
+                SaluData utiliza tecnología blockchain para garantizar la privacidad y seguridad 
+                de tus datos médicos. Conecta tu wallet para comenzar.
+              </p>
+            </div>
           </div>
         )}
 
-        {/* Features */}
-        <div className="mt-16 max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
-            Características de SaluData
-          </h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-green-600" />
-                  Privacidad Garantizada
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+        {/* Features - Solo mostrar si no hay perfil seleccionado */}
+        {isConnected && !selectedProfile && (
+          <div className="mt-16 max-w-6xl mx-auto">
+            <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
+              Características de SaluData
+            </h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="bg-white rounded-lg p-6 shadow-sm border">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="p-2 bg-green-100 rounded-lg">
+                    <svg className="h-5 w-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="font-semibold text-gray-900">Privacidad Garantizada</h3>
+                </div>
                 <p className="text-gray-600">
                   Tus datos médicos están cifrados y solo tú controlas quién puede acceder a ellos.
                 </p>
-              </CardContent>
-            </Card>
+              </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-blue-600" />
-                  Registros Inmutables
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+              <div className="bg-white rounded-lg p-6 shadow-sm border">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="p-2 bg-blue-100 rounded-lg">
+                    <svg className="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <h3 className="font-semibold text-gray-900">Registros Inmutables</h3>
+                </div>
                 <p className="text-gray-600">
                   Los registros médicos se almacenan de forma inmutable en la blockchain.
                 </p>
-              </CardContent>
-            </Card>
+              </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Key className="h-5 w-5 text-purple-600" />
-                  Control Total
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+              <div className="bg-white rounded-lg p-6 shadow-sm border">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="p-2 bg-purple-100 rounded-lg">
+                    <svg className="h-5 w-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                    </svg>
+                  </div>
+                  <h3 className="font-semibold text-gray-900">Control Total</h3>
+                </div>
                 <p className="text-gray-600">
                   Otorga y revoca permisos de acceso a tus registros médicos cuando lo necesites.
                 </p>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   )

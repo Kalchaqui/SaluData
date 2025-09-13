@@ -1,0 +1,31 @@
+# SaluData - Configuración de Cursor
+
+## Reglas del Proyecto
+- Siempre responder en español
+- Preferir rutas absolutas sobre relativas cuando sea posible
+- Seguir las mejores prácticas de Next.js y React
+- Usar TypeScript estrictamente
+- Mantener el código limpio y bien documentado
+
+## Estructura del Proyecto
+- Frontend: Next.js 15.5.2 con React 19
+- Backend: Hardhat para contratos inteligentes
+- UI: Tailwind CSS con componentes Radix UI
+- Blockchain: Wagmi + Viem para integración Web3
+
+## Convenciones de Código
+- Usar camelCase para variables y funciones
+- Usar PascalCase para componentes React
+- Usar kebab-case para archivos de componentes
+- Preferir arrow functions para componentes funcionales
+- Usar TypeScript interfaces para tipos de datos
+
+## Comandos Útiles
+- `npm run dev` - Ejecutar frontend en desarrollo
+- `npm run build` - Construir para producción
+- `npm run lint` - Ejecutar linter
+
+## Notas Importantes
+- El proyecto usa WalletConnect para conexión de wallets
+- Configuración de contratos en `/packages/hardhat/contracts/`
+- Componentes UI reutilizables en `/src/components/ui/`

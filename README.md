@@ -99,7 +99,35 @@ https://testnet.snowtrace.io/address/0x070018089b50cdac6b25bdb60b7c71a829c29f10
 - **Development:** Remix / Hardhat / Foundry
 - **Wallets:** Core | Metamask
 - **Decentralized Storage:** IPFS
-- **Frontend:** Node.js, Web3.js / Ethers.js, Privy
+- **Frontend:** Next.js 15, React 19, TypeScript, Tailwind CSS, Wagmi + Viem
+
+## 🚀 Configuración para el Equipo
+
+### Para nuevos miembros del equipo:
+📋 **Ver [CONFIGURACION_EQUIPO.md](./CONFIGURACION_EQUIPO.md) para instrucciones detalladas de configuración**
+
+### Configuración rápida:
+```bash
+# 1. Clonar el repositorio
+git clone <repository-url>
+cd SaluData
+
+# 2. Instalar dependencias
+cd packages/frontend && npm install
+cd ../hardhat && npm install
+
+# 3. Configurar variables de entorno
+cp packages/frontend/env.example packages/frontend/.env.local
+cp packages/hardhat/env.example packages/hardhat/.env
+
+# 4. Ejecutar en desarrollo
+cd packages/frontend && npm run dev
+```
+
+### Credenciales necesarias:
+- 🔑 Wallet privada para deploy (Fuji testnet)
+- 🌐 WalletConnect Project ID (opcional)
+- 📡 API Keys para verificación de contratos (opcional)
 
 ---
 
